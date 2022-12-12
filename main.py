@@ -1,53 +1,39 @@
-import pyscreenshot as ImageGrab
-import os
-from pynput.mouse import Listener
-import sys
 import tkinter as tk
-from PIL import Image
-from io import BytesIO
-from time import sleep
- 
-click1 = 0
+from grab import start_grab, grab
+from detection import process_image
+
 x1 = 0
 y1 = 0
- 
-def grab(x, y, w, h):
-    im = ImageGrab.grab(bbox=(x, y, w, h))
-    im.save('im.png')
-    image = Image.open("im.png")
-    output = BytesIO()
-    image.convert("RGB").save(output, "BMP")
-    output.close()
+x2 = 0
+y2 = 0
 
+def set_capture_area():
+    global x1, y1, x2, y2
+    print("Clique uma vez no canto superior esquerdo e outra no inferior direito da área a ser monitorada")
+    x1, y1, x2, y2 = start_grab()
+    print("X1: " + str(x1) + " Y1: " + str(y1) + "\nX2: " + str(x2) + " Y2: " + str(y2) + "\n")
 
-def on_click(x, y, button, pressed):
-    global click1, x1, y1, listener
-    
-    print(x, y, button)
-    if pressed:
-        if click1 == 0:
-            x1 = x
-            y1 = y
-            click1 = 1
-        else:
-            grab(x1, y1, x, y)
-            listener.stop()
-            x1 = 0
-            y2 = 0
-            click1=0
-            sys.exit()
+def grab_target_obj():
+    x1, y1, x2, y2 = start_grab()
+    grab(x1, y1, x2, y2)
 
-    sleep(0.1)
-def start():
-    global listener
- 
-    print("Clique uma vez no canto superior esquerdo e outra no inferior direito")
-    with Listener(on_click=on_click) as listener:
-        listener.join()
- 
-root = tk.Tk()
+def init_inspector():
+    global x1, y1, x2, y2
+    process_image("target.png", x1, y1, x2, y2)
+
+root = tk.Tk(baseName="root")
+
 root.geometry("400x600")
-but = tk.Button(root, text="GRAB GET IMAGE", command=start, width=20,height=10, bg="gold")
-but.pack()
+root.title("Inspetor de insetos")
+root.configure(background='#262626')
+
+cap_select_btn = tk.Button(root, text="SELECIONAR ÁREA DE CAPTURA", command=set_capture_area, width=40, height=2, bg="#4F4D8C", activebackground="#8F8EBF", fg="white")
+target_select_btn = tk.Button(root, text="SELECIONAR OBJETO ALVO", command=grab_target_obj, width=40, height=2, bg="#4F4D8C", activebackground="#8F8EBF", fg="white")
+init_btn = tk.Button(root, text="INSPECIONAR", command=init_inspector, width=40, height=2, bg="#5F5DA6", activebackground="#8F8EBF", fg="white")
+#stop_btn = tk.Button(root, text="PARAR", command=print_coords, width=40, height=2, bg="#2E4159", activebackground="#8F8EBF", fg="white")
+
+cap_select_btn.pack(pady=10, padx=10)
+target_select_btn.pack(pady=10, padx=10)
+init_btn.pack(pady=10, padx=10)
  
 root.mainloop()
