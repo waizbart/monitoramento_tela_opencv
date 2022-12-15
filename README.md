@@ -1,2 +1,11 @@
-# monitoramento_tela_opencv
-Bot com objetivo de monitorar área da tela e verificar se imagem esta presente ou não
+# Como executar o projeto
+
+#### NECESSÁRIO PYTHON 3+ INSTALADO
+
+### Instalando dependências: 
+
+        pip install -r requirements.txt
+        
+### Executando: 
+
+        python main.py

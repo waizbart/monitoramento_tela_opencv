@@ -8,14 +8,10 @@ y1 = 0
 x2 = 0
 y2 = 0
  
-def grab(x, y, w, h):
-    print("Clique uma vez no canto superior esquerdo e outra no inferior direito do objeto alvo")
-
+def grab(x, y, w, h, filename):
     try:
         im = ImageGrab.grab(bbox=(x, y, w, h))
-        im.save('target.png')
-
-        print("ALVO CAPTURADO COM SUCESSO!")
+        im.save(filename)
 
     except Exception as e:
         print("Error: ", e)
